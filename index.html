@@ -64,6 +64,19 @@ body {
   from {opacity:0;}
   to {opacity:1;}
 }
+
+/* 🎶 زر الموسيقى */
+#musicBtn {
+  margin-top: 20px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(45deg,#ff4da6,#7a5cff);
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255,77,166,0.4);
+}
 </style>
 </head>
 
@@ -80,14 +93,19 @@ body {
     <div class="box"><div id="s" class="num"></div><div class="label">Seconds</div></div>
   </div>
 
+  <!-- 🎶 زر الموسيقى -->
+  <button id="musicBtn" onclick="toggleMusic()">🎶 Play Music</button>
+
   <div id="end">Your surprise is ready... 🎉</div>
 </div>
 
+<!-- 🎵 ملف الموسيقى -->
 <audio id="music" src="music.mp3" loop></audio>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 
 <script>
+
 // 🌌 3D background
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
@@ -154,10 +172,24 @@ function type(){
 }
 type();
 
-// 🎶 تشغيل الموسيقى
-document.addEventListener("click", ()=>{
-  document.getElementById("music").play().catch(()=>{});
-},{once:true});
+// 🎶 الموسيقى (FIXED)
+let music = document.getElementById("music");
+let playing = false;
+
+function toggleMusic(){
+  if(!playing){
+    music.play().then(()=>{
+      playing = true;
+      document.getElementById("musicBtn").innerText = "⏸ Pause Music";
+    }).catch(()=>{
+      alert("اضغط مرة ثانية لتشغيل الموسيقى 🎶");
+    });
+  } else {
+    music.pause();
+    playing = false;
+    document.getElementById("musicBtn").innerText = "🎶 Play Music";
+  }
+}
 
 // ⏳ countdown
 const target = new Date("2026-05-30T00:00:00").getTime();
@@ -180,6 +212,8 @@ const x = setInterval(()=>{
     clearInterval(x);
 
     document.getElementById("countdown").style.display="none";
+    document.getElementById("typing").style.display="none";
+    document.getElementById("musicBtn").style.display="none";
     document.getElementById("end").style.display="block";
 
     setTimeout(()=>{
@@ -194,6 +228,7 @@ window.addEventListener("resize", ()=>{
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
+
 </script>
 
 </body>
